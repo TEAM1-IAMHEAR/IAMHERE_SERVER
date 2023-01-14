@@ -4,11 +4,10 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Timestamp,
 } from 'typeorm';
 import { User } from './user.model';
 
-@Entity('community')
+@Entity('x')
 export class Community {
   @PrimaryGeneratedColumn()
   id: number;
@@ -25,8 +24,8 @@ export class Community {
   @Column({ length: 256, nullable: true })
   image: string;
 
-  @Column()
-  timestamp: Timestamp;
+  @Column({ type: 'timestamp' })
+  timestamp: Date;
 
   @ManyToOne(() => User, (user) => user.community, {
     onUpdate: 'CASCADE',

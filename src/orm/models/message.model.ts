@@ -4,7 +4,6 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Timestamp,
 } from 'typeorm';
 import { ChatRoom } from './chat-room.model';
 import { User } from './user.model';
@@ -20,8 +19,8 @@ export class Message {
   @Column({ length: 10 })
   type: string;
 
-  @Column()
-  timestamp: Timestamp;
+  @Column({ type: 'timestamp' })
+  timestamp: Date;
 
   @ManyToOne(() => ChatRoom, (chatRoom) => chatRoom.message, {
     onUpdate: 'CASCADE',
