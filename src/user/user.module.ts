@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserController } from 'src/controller/user.controller';
+import { UserController } from 'src/user/user.controller';
 import { JwtStrategy } from 'src/jwt/passport/jwt.strategy';
-import { UserRepository } from 'src/repository/user.repository';
-import { UserService } from 'src/service/user.service';
+import { UserService } from 'src/user/user.service';
+import { User } from 'src/Entities/user.model';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserRepository])],
+  imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
   providers: [UserService, JwtStrategy],
   exports: [UserService],

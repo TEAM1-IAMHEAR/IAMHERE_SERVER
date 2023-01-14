@@ -1,34 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { SignUpDto } from 'src/dto/sign-up.dto';
-import { User } from 'src/orm/models/user.model';
-import { UserRepository } from 'src/repository/user.repository';
-import { LoginRequestDto } from 'src/dto/login.dto';
+import { SignUpDto } from 'src/auth/dto/sign-up.dto';
+import { LoginRequestDto } from 'src/auth/dto/login.dto';
 import {
   ExistNicknameException,
   notConfirmPasswordException,
   notFoundUserException,
 } from 'src/exception/exception.index';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from 'src/Entities/user.model';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userRepository: UserRepository,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
-  public async signUp(user: SignUpDto): Promise<User> {
-    if (
-      await this.userRepository.findOne({ where: { nickname: user.nickname } })
-    ) {
+  public async signUp(user: SignUpDto) {
+    const isExistUser: User = await this.userRepository.findOne({
+      where: { nickname: user.nickname },
+    });
+
+    if (isExistUser) {
       throw ExistNicknameException;
     }
-    const hashPassword = await bcrypt.hash(user.password, 12);
-    user.password = hashPassword;
 
-    return await this.userRepository.signUp(user);
+    const password = await bcrypt.hash(user.password, 12);
+
+    await this.userRepository.save({
+      ...user,
+      password,
+    });
   }
 
   public async jwtLogIn(dto: LoginRequestDto) {
