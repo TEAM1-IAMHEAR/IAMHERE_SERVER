@@ -12,13 +12,11 @@ import { UserModule } from './user.module';
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
-    JwtModule.registerAsync({
-      useFactory: (config: ConfigService) => ({
-        secret: config.get('JWT_SECRET_KEY'),
-        signOptions: { expiresIn: config.get('TOKEN_EXPIRED_TIME') },
-      }),
-    }),
     TypeOrmModule.forFeature([UserRepository]),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: process.env.TOKEN_EXPIRED_TIME },
+    }),
     UserModule,
   ],
   providers: [AuthService, JwtStrategy],
