@@ -10,7 +10,7 @@ import {
 } from 'src/exception/exception.index';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from 'src/Entities/user.model';
+import { User } from 'src/entities/user.model';
 
 @Injectable()
 export class AuthService {
